@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RefCallBack } from "react-hook-form";
 
 interface IInputLB {
   title: string;
@@ -8,8 +9,11 @@ interface IInputLB {
   placeholder?: string;
   error?: string;
   required?: boolean;
-  value?: string;
+  value?: string | number;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: () => void; // Thêm thuộc tính onBlur
+  ref?: RefCallBack; // Thêm thuộc tính ref
+  disabled?: boolean; // Thêm thuộc tính disabled
 }
 
 export function InputLabel({
@@ -21,6 +25,9 @@ export function InputLabel({
   required,
   value,
   onChange,
+  onBlur,
+  ref,
+  disabled,
 }: IInputLB) {
   return (
     <div className="grid w-full items-center gap-1.5">
@@ -33,6 +40,9 @@ export function InputLabel({
         name={name}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
+        ref={ref}
+        disabled={disabled}
         className={`focus-visible:ring-transparent ${
           error && "border-red-500"
         }`}

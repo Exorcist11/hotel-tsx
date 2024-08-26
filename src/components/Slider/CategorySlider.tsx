@@ -12,10 +12,16 @@ import { fetcher } from "@/lib/fetcher";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { Button } from "../ui/button";
+import Dot from "../Loading/Dot";
 
 export default function CategorySlider() {
   const { data, error, isLoading } = useSWR(URL.CATEGORY, fetcher);
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center">
+        <Dot />
+      </div>
+    );
   if (error) return <div>Error: {error.message}</div>;
 
   return (

@@ -120,19 +120,31 @@ export default function ClientLayout() {
           </button>
         </div>
       </div>
+
       <footer className="footer text-base-content p-10 bg-[#343434] flex gap-5 items-center">
-        <nav className="w-1/3 text-right text-[#d3a53a] text-[16px] uppercase justify-end">
-          <h6 className="footer-title ">Khách sạn Mường Thanh</h6>
-          <a className="link link-hover">Về chúng tôi</a>
-          <a className="link link-hover" href="/list-room">
+        <nav className="w-1/3 text-right text-[#d3a53a] text-[16px] uppercase justify-end flex flex-col gap-5">
+          <h6 className="text-2xl">Khách sạn Mường Thanh</h6>
+          <a className="cursor-pointer hover:underline font-semibold">
+            Về chúng tôi
+          </a>
+          <a
+            className="cursor-pointer hover:underline font-semibold"
+            href="/list-room"
+          >
             Danh sách phòng
           </a>
-          <a className="link link-hover" href="/booking">
+          <a
+            className="cursor-pointer hover:underline font-semibold"
+            href="/booking"
+          >
             Đặt phòng
           </a>
-          <a className="link link-hover">Liên hệ</a>
+          <a className="cursor-pointer hover:underline font-semibold">
+            Liên hệ
+          </a>
         </nav>
-        <nav className="w-[228px] h-[440px] text-center flex items-center justify-center ">
+
+        <nav className="w-[228px] h-[440px] text-center flex items-right justify-right ">
           <img
             src="/images/luxury_1696912907.png"
             alt="ui"
@@ -140,7 +152,7 @@ export default function ClientLayout() {
           />
         </nav>
 
-        <nav className="text-[#a09f9f] flex flex-col gap-11 w-1/3 ml-24">
+        <nav className="text-[#a09f9f] flex flex-col gap-5 w-1/3 ml-24">
           <h3 className="text-[72px] ">24</h3>
           <p className="uppercase ">Khách sạn</p>
           <h3 className="text-[72px] ">18 </h3>

@@ -1,4 +1,4 @@
-const BASE_URL = 'http://127.0.0.1:8000/api'
+const BASE_URL = "http://127.0.0.1:8000/api";
 
 export const URL = {
   CATEGORY: `${BASE_URL}/categories`,
@@ -7,5 +7,7 @@ export const URL = {
   LOGIN: `${BASE_URL}/login`,
 
   ORDER: `${BASE_URL}/orders`,
-  
-}
+
+  DASHBOARD: `${BASE_URL}/dashboard`,
+  ROOM: `${BASE_URL}/rooms`,
+};

@@ -1,3 +1,4 @@
+
 export interface ICategory {
   id: number;
   name: string;
@@ -7,4 +8,5 @@ export interface ICategory {
   image: string;
   utilities: string;
   max_occupancy: number;
+  
 }
