@@ -28,14 +28,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { InputLabel } from "@/components/InputCustom/InputLabel";
 import { ICategory } from "@/interface/ICategoryRoom";
 import { Label } from "@/components/ui/label";
+import { Search } from "lucide-react";
 
 export default function CategoryRoom() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isDialogAddOpen, setIsDialogAddOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isDialogAddOpen, setIsDialogAddOpen] = useState<boolean>(false);
   const { data, error, isLoading } = useSWR(URL.CATEGORY, fetcher);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null
   );
+  const [search, setSearch] = useState<string>("");
   const { data: detail_category, isLoading: loading_detail } = useSWR(
     selectedCategoryId ? URL.CATEGORY_DETAIL(selectedCategoryId) : null,
     fetcher
@@ -133,14 +135,14 @@ export default function CategoryRoom() {
     }
   };
 
-  const handleChangeCheckbox = (item: any) => {
+  const handleChangeCheckbox = (item: string) => {
     setCheckedItem((prev: any[]) => {
       if (!Array.isArray(prev)) {
         prev = [];
       }
 
       if (prev.includes(item)) {
-        return prev.filter((i: any) => i !== item);
+        return prev.filter((i: string) => i !== item);
       } else {
         return [...prev, item];
       }
@@ -193,7 +195,7 @@ export default function CategoryRoom() {
           <DialogTrigger>
             <Button className="max-w-xs">Thêm thể loại phòng</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-5xl">
+          <DialogContent className="max-w-5xl overflow-y-auto max-h-[600px] scrollbar">
             <form
               className="flex flex-col gap-3 max-w-5xl"
               onSubmit={handleSubmit(onSubmit)}
@@ -352,21 +354,11 @@ export default function CategoryRoom() {
         <label className="border py-1 px-2 rounded-lg flex items-center gap-2">
           <input
             type="text"
-            className="grow w-[250px] outline-none"
+            className="w-[250px] outline-none"
             placeholder="Tìm kiếm thể loại phòng"
+            onChange={(e) => setSearch(e.target.value)}
           />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            className="h-4 w-4 opacity-70"
-          >
-            <path
-              fillRule="evenodd"
-              d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <Search size={14} />
         </label>
       </div>
 
@@ -382,228 +374,242 @@ export default function CategoryRoom() {
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {data.map((item: any, index: number) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell className="w-3/12">{item?.name}</TableCell>
-                <TableCell className="w-[350px]">
-                  <div className="flex items-center justify-center">
-                    <div className="w-full h-48">
-                      <img
-                        src={"http://127.0.0.1:8000" + item?.image}
-                        alt={item?.name}
-                        className="w-full h-full object-cover object-center"
-                      />
+          <TableBody className="">
+            {data
+              ?.filter((s: string) =>
+                s.name.toLowerCase().includes(search?.toLocaleLowerCase())
+              )
+              .map((item: any, index: number) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{index + 1}</TableCell>
+                  <TableCell className="w-3/12">{item?.name}</TableCell>
+                  <TableCell className="w-[350px]">
+                    <div className="flex items-center justify-center">
+                      <div className="w-full h-48">
+                        <img
+                          src={"http://127.0.0.1:8000" + item?.image}
+                          alt={item?.name}
+                          className="w-full h-full object-cover object-center"
+                        />
+                      </div>
                     </div>
-                  </div>
-                </TableCell>
-                <TableCell>{item?.description}</TableCell>
-                <TableCell className="text-right w-1/12">
-                  <div className="flex items-center justify-center gap-2">
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                      <DialogTrigger>
-                        <div
-                          onClick={() => handleView(item.id)}
-                          className="bg-green-700 flex p-2 rounded-xl gap-1 text-white cursor-pointer hover:opacity-90"
-                        >
-                          <MdCreate size={20} />
-                          <p>Sửa</p>
-                        </div>
-                      </DialogTrigger>
-
-                      <DialogContent className="max-w-5xl">
-                        {loading_detail ? (
-                          <Dot />
-                        ) : (
-                          <form
-                            className="flex flex-col gap-3 max-w-5xl"
-                            onSubmit={handleSubmit(onUpdate)}
+                  </TableCell>
+                  <TableCell>{item?.description}</TableCell>
+                  <TableCell className="text-right w-1/12">
+                    <div className="flex items-center justify-center gap-2">
+                      <Dialog
+                        open={isDialogOpen}
+                        onOpenChange={setIsDialogOpen}
+                      >
+                        <DialogTrigger>
+                          <div
+                            onClick={() => handleView(item.id)}
+                            className="bg-green-700 flex p-2 rounded-xl gap-1 text-white cursor-pointer hover:opacity-90"
                           >
-                            <h3 className="font-bold text-lg text-center">
-                              Thông tin loại phòng{" "}
-                              {detail_category?.category.name}
-                            </h3>
-                            <div className="flex flex-col gap-4">
-                              <Controller
-                                name="name"
-                                control={control}
-                                rules={{
-                                  required: "Tên thể loại không được để trống",
-                                }}
-                                render={({ field, fieldState: { error } }) => (
-                                  <InputLabel
-                                    title="Tên thể loại"
-                                    required
-                                    placeholder="Tên thể loại phòng"
-                                    type="text"
-                                    error={error?.message}
-                                    {...field}
-                                  />
-                                )}
-                              />
+                            <MdCreate size={20} />
+                            <p>Sửa</p>
+                          </div>
+                        </DialogTrigger>
 
-                              <Controller
-                                name="price"
-                                control={control}
-                                rules={{
-                                  required: "Giá phòng không được để trống",
-                                }}
-                                render={({ field, fieldState: { error } }) => (
-                                  <InputLabel
-                                    title="Giá phòng"
-                                    required
-                                    placeholder="Giá phòng"
-                                    type="number"
-                                    error={error?.message}
-                                    {...field}
-                                  />
-                                )}
-                              />
-
-                              <div className="flex gap-5 items-start">
+                        <DialogContent className="max-w-5xl scrollbar max-h-[650px] overflow-y-auto">
+                          {loading_detail ? (
+                            <Dot />
+                          ) : (
+                            <form
+                              className="flex flex-col gap-3 max-w-5xl"
+                              onSubmit={handleSubmit(onUpdate)}
+                            >
+                              <h3 className="font-bold text-lg text-center">
+                                Thông tin loại phòng{" "}
+                                {detail_category?.category.name}
+                              </h3>
+                              <div className="flex flex-col gap-4">
                                 <Controller
-                                  name="max_occupancy"
-                                  control={control}
-                                  rules={{
-                                    required: "Số lượng không được để trống",
-                                  }}
-                                  render={({
-                                    field,
-                                    fieldState: { error },
-                                  }) => (
-                                    <InputLabel
-                                      title="Số lượng người"
-                                      required
-                                      placeholder="Số lượng người/phòng"
-                                      type="number"
-                                      error={error?.message}
-                                      {...field}
-                                    />
-                                  )}
-                                />
-
-                                <Controller
-                                  name="size"
+                                  name="name"
                                   control={control}
                                   rules={{
                                     required:
-                                      "Kích thước phòng không được để trống",
+                                      "Tên thể loại không được để trống",
                                   }}
                                   render={({
                                     field,
                                     fieldState: { error },
                                   }) => (
                                     <InputLabel
-                                      title="Kích thước phòng"
+                                      title="Tên thể loại"
                                       required
-                                      placeholder="Kích thước phòng"
+                                      placeholder="Tên thể loại phòng"
+                                      type="text"
+                                      error={error?.message}
+                                      {...field}
+                                    />
+                                  )}
+                                />
+
+                                <Controller
+                                  name="price"
+                                  control={control}
+                                  rules={{
+                                    required: "Giá phòng không được để trống",
+                                  }}
+                                  render={({
+                                    field,
+                                    fieldState: { error },
+                                  }) => (
+                                    <InputLabel
+                                      title="Giá phòng"
+                                      required
+                                      placeholder="Giá phòng"
                                       type="number"
                                       error={error?.message}
                                       {...field}
                                     />
                                   )}
                                 />
-                              </div>
 
-                              <label className="form-control w-full ">
-                                <Label className="font-semibold">
-                                  Tiện ích kèm theo
-                                </Label>
+                                <div className="flex gap-5 items-start">
+                                  <Controller
+                                    name="max_occupancy"
+                                    control={control}
+                                    rules={{
+                                      required: "Số lượng không được để trống",
+                                    }}
+                                    render={({
+                                      field,
+                                      fieldState: { error },
+                                    }) => (
+                                      <InputLabel
+                                        title="Số lượng người"
+                                        required
+                                        placeholder="Số lượng người/phòng"
+                                        type="number"
+                                        error={error?.message}
+                                        {...field}
+                                      />
+                                    )}
+                                  />
 
-                                <div className="grid grid-cols-4 gap-3">
-                                  {services.map((item, index) => (
-                                    <div
-                                      className="form-control col-span-1"
-                                      key={index}
-                                    >
-                                      <label className="flex items-center gap-2 cursor-pointer">
-                                        <input
-                                          value={item}
-                                          type="checkbox"
-                                          className="checkbox"
-                                          checked={checkedItem.includes(item)}
-                                          onChange={() =>
-                                            handleChangeCheckbox(item)
-                                          }
-                                        />
-                                        <span className="label-text">
-                                          {item}
-                                        </span>
-                                      </label>
-                                    </div>
-                                  ))}
+                                  <Controller
+                                    name="size"
+                                    control={control}
+                                    rules={{
+                                      required:
+                                        "Kích thước phòng không được để trống",
+                                    }}
+                                    render={({
+                                      field,
+                                      fieldState: { error },
+                                    }) => (
+                                      <InputLabel
+                                        title="Kích thước phòng"
+                                        required
+                                        placeholder="Kích thước phòng"
+                                        type="number"
+                                        error={error?.message}
+                                        {...field}
+                                      />
+                                    )}
+                                  />
                                 </div>
-                              </label>
 
-                              <label className="form-control w-full ">
-                                <Label className="label-text">Mô tả</Label>
+                                <label className="form-control w-full ">
+                                  <Label className="font-semibold">
+                                    Tiện ích kèm theo
+                                  </Label>
 
-                                <Controller
-                                  name="description"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <Textarea
-                                      placeholder="Mô tả"
-                                      className="textarea textarea-bordered w-full min-h-[150px] focus:outline-none focus:ring-0 focus-visible:ring-0"
-                                      {...field}
-                                    />
-                                  )}
-                                />
-                              </label>
+                                  <div className="grid grid-cols-4 gap-3">
+                                    {services.map((item, index) => (
+                                      <div
+                                        className="form-control col-span-1"
+                                        key={index}
+                                      >
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                          <input
+                                            value={item}
+                                            type="checkbox"
+                                            className="checkbox"
+                                            checked={checkedItem.includes(item)}
+                                            onChange={() =>
+                                              handleChangeCheckbox(item)
+                                            }
+                                          />
+                                          <span className="label-text">
+                                            {item}
+                                          </span>
+                                        </label>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </label>
 
-                              <label className="form-control w-full ">
-                                <Label className="label-text">
-                                  Hình ảnh{" "}
-                                  <span className="text-red-500">*</span>
-                                </Label>
+                                <label className="form-control w-full ">
+                                  <Label className="label-text">Mô tả</Label>
 
-                                <Controller
-                                  name="image"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <input
-                                      type="file"
-                                      className="file-input file-input-bordered w-full"
-                                      onChange={(e) => {
-                                        if (
-                                          e.target.files &&
-                                          e.target.files.length > 0
-                                        ) {
-                                          field.onChange(e.target.files[0]);
-                                        }
-                                      }}
-                                    />
-                                  )}
-                                />
-                              </label>
-                            </div>
-                            <div className="flex justify-end">
-                              <div className="flex items-end gap-2">
-                                <DialogClose asChild>
-                                  <Button variant={"outline"} type="reset">
-                                    Hủy bỏ
-                                  </Button>
-                                </DialogClose>
+                                  <Controller
+                                    name="description"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <Textarea
+                                        placeholder="Mô tả"
+                                        className="textarea textarea-bordered w-full min-h-[150px] focus:outline-none focus:ring-0 focus-visible:ring-0"
+                                        {...field}
+                                      />
+                                    )}
+                                  />
+                                </label>
 
-                                <Button type="submit">Cập nhật</Button>
+                                <label className="form-control w-full ">
+                                  <Label className="label-text">
+                                    Hình ảnh{" "}
+                                    <span className="text-red-500">*</span>
+                                  </Label>
+
+                                  <Controller
+                                    name="image"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <input
+                                        type="file"
+                                        className="file-input file-input-bordered w-full"
+                                        onChange={(e) => {
+                                          if (
+                                            e.target.files &&
+                                            e.target.files.length > 0
+                                          ) {
+                                            field.onChange(e.target.files[0]);
+                                          }
+                                        }}
+                                      />
+                                    )}
+                                  />
+                                </label>
                               </div>
-                            </div>
-                          </form>
-                        )}
-                      </DialogContent>
-                    </Dialog>
-                    <div
-                      onClick={() => handleDelete(item?.id)}
-                      className="bg-red-700 flex p-2 rounded-xl gap-1 text-white cursor-pointer hover:opacity-90"
-                    >
-                      <MdDelete size={20} />
-                      <p>Xóa</p>
+                              <div className="flex justify-end">
+                                <div className="flex items-end gap-2">
+                                  <DialogClose asChild>
+                                    <Button variant={"outline"} type="reset">
+                                      Hủy bỏ
+                                    </Button>
+                                  </DialogClose>
+
+                                  <Button type="submit">Cập nhật</Button>
+                                </div>
+                              </div>
+                            </form>
+                          )}
+                        </DialogContent>
+                      </Dialog>
+                      <div
+                        onClick={() => handleDelete(item?.id)}
+                        className="bg-red-700 flex p-2 rounded-xl gap-1 text-white cursor-pointer hover:opacity-90"
+                      >
+                        <MdDelete size={20} />
+                        <p>Xóa</p>
+                      </div>
                     </div>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div>

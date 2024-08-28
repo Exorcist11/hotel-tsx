@@ -10,4 +10,5 @@ export const URL = {
 
   DASHBOARD: `${BASE_URL}/dashboard`,
   ROOM: `${BASE_URL}/rooms`,
+  ROOM_DETAIL: (id: string) => `${BASE_URL}/rooms/${id}`,
 };

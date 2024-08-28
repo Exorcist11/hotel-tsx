@@ -68,6 +68,28 @@
   }
 }
 
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 5px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #f7f4ed;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #e0cbcb;
+    border-radius: 100vh;
+    border: 3px solid #f6f7ed;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #c0a0b9;
+  }
+}
+
 .li_content {
   @apply uppercase font-semibold cursor-pointer py-1 text-gray-500 hover:text-[#5c4a3e] relative 
 after:absolute after:bottom-0 after:left-0 after:bg-[#5c4a3e] after:h-0.5 after:w-0 hover:after:w-full 
