@@ -376,7 +376,7 @@ export default function CategoryRoom() {
           </TableHeader>
           <TableBody className="">
             {data
-              ?.filter((s: string) =>
+              ?.filter((s: ICategory) =>
                 s.name.toLowerCase().includes(search?.toLocaleLowerCase())
               )
               .map((item: any, index: number) => (

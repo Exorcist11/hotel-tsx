@@ -100,7 +100,7 @@ export default function Room() {
       }
 
       reset();
-    } catch (e) {
+    } catch (e: any) {
       toast.error(e.response.data.message);
     }
   };
@@ -187,7 +187,7 @@ export default function Room() {
                       <Label className="label-text">Mô tả</Label>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        defaultValue={field.value?.toString()}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Chọn tầng">
@@ -226,7 +226,7 @@ export default function Room() {
                         <Label className="label-text">Thể loại phòng</Label>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          defaultValue={field.value?.toString()}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Chọn thể loại phòng">
@@ -303,7 +303,7 @@ export default function Room() {
           </TableHeader>
           <TableBody>
             {rooms
-              ?.filter((s: string) =>
+              ?.filter((s: IRoom) =>
                 s.room_no.toLowerCase().includes(search?.toLocaleLowerCase())
               )
               ?.map((item: any, index: number) => (
@@ -379,7 +379,7 @@ export default function Room() {
                                       </Label>
                                       <Select
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
+                                        defaultValue={field.value?.toString()}
                                       >
                                         <SelectTrigger>
                                           <SelectValue placeholder="Chọn tầng">
@@ -428,7 +428,7 @@ export default function Room() {
                                         </Label>
                                         <Select
                                           onValueChange={field.onChange}
-                                          defaultValue={field.value}
+                                          defaultValue={field.value?.toString()}
                                         >
                                           <SelectTrigger>
                                             <SelectValue placeholder="Chọn thể loại phòng">

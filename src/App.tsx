@@ -10,6 +10,7 @@ import DashboardLayout from "./components/Layout/DashboardLayout";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Room from "./pages/dashboard/Room";
 import CategoryRoom from "./pages/dashboard/Category";
+import Staff from "./pages/dashboard/Staff";
 const App = () => {
   return (
     <BrowserRouter>
@@ -27,6 +28,7 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/rooms" element={<Room />} />
           <Route path="/category-room" element={<CategoryRoom />} />
+          <Route path="/staff" element={<Staff />} />
         </Route>
       </Routes>
     </BrowserRouter>
